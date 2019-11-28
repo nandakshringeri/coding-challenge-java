@@ -11,10 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping(value = "/api/v1/sellers")
+@RequestMapping(value = "/api")
 public class SellerController {
 
     private SellerService sellerService;
@@ -28,7 +30,7 @@ public class SellerController {
             @ApiResponse(code = 200, message = "Processed successfully", response = Seller.class),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    @GetMapping(value = "/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/sellers/{uuid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Seller> getSellerById(@PathVariable @NotNull String uuid) {
         Seller seller = sellerService.getByUuid(uuid);
         if (seller == null) {
@@ -36,5 +38,16 @@ public class SellerController {
         }
 
         return new ResponseEntity<>(seller, HttpStatus.OK);
+    }
+    
+    @ApiOperation(value = "Fetch top 10 seller information based on product count")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Processed successfully", response = Seller.class),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    @GetMapping(value = "/v2/top10", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object[]> getTop10Seller() {
+        List<Seller> topTenSellers = sellerService.getTopTenSellers();
+        return new ResponseEntity<>(topTenSellers.toArray(), HttpStatus.OK);
     }
 }

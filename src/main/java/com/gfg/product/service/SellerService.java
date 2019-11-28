@@ -20,4 +20,8 @@ public class SellerService {
 
         return sellers.size() == 0 ? null : sellers.get(0);
     }
+    
+	public List<Seller> getTopTenSellers(){
+		  return this.repository.findTopTenSellers();
+    }
 }
