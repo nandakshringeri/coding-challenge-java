@@ -64,6 +64,7 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Processed successfully", response = ProductDTO.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
+    @Deprecated
     @GetMapping(value = "/v1/products/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<Product> products = productService.getAll();
@@ -75,7 +76,11 @@ public class ProductController {
         return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
     
-    
+    @ApiOperation(value = "View all products along with self link to the seller details ")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Processed successfully", response = ProductResource.class, responseContainer = "Resources"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
     @GetMapping(value = "/v2/products/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resources<ProductResource>> getAllProductWithLinks() {
         List<Product> products = productService.getAll();
